@@ -1,14 +1,26 @@
 <?php
 session_start();
-if(empty($_SESSION["username"]))
-{
+if (empty($_SESSION["username"])) {
     header('Location: login.php');
-}else{
-    if($_SESSION["username"] != "admin")
-    {
+} else {
+    if ($_SESSION["username"] != "admin") {
         header('Location: admin-dashboard.php');
     }
 }
+require 'connection.php';
+$msg = "";
+if (isset($_POST['submit'])) {
+    $userinfo_id = $_POST['id'];
+    $user_delete = "delete from userinfo where userinfo_id=$userinfo_id";
+    if ($conn->query($user_delete) === TRUE) {
+        $msg = "successfully deleted";
+    }
+}
+$total_number_users = $conn->query("SELECT COUNT(*) as total_users FROM userinfo");
+$total_number_categories = $conn->query("SELECT COUNT(*) as total_categories FROM video_category");
+$total_user_number = $total_number_users->fetch_assoc();
+$total_category_number = $total_number_categories->fetch_assoc();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +59,8 @@ if(empty($_SESSION["username"]))
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search"
+                   aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
                     <i class="fas fa-search"></i>
@@ -83,7 +96,8 @@ if(empty($_SESSION["username"]))
             </div>
         </li>-->
         <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user-circle fa-fw"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -107,23 +121,37 @@ if(empty($_SESSION["username"]))
             </a>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-fw fa-folder"></i>
+            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-list-alt"></i>
                 <span>Categories</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                <h6 class="dropdown-header">Category List :</h6>
-                <a class="dropdown-item" href="categories.php">PHP</a>
-                <a class="dropdown-item" href="categories.php">HTML</a>
-                <a class="dropdown-item" href="categories.php">JavaScript</a>
-                <a class="dropdown-item" href="categories.php">CSS</a>
+                <h6 class="dropdown-header">
+                    <a href="categorylist.php"> Category List </a>
+                </h6>
+                <?php
+                $show_category = "select * from video_category";
+                $result = $conn->query($show_category);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        ?>
+                        <a class="dropdown-item" href="categories.php?id=<?php echo $row['category_id'] ?>">
+                            <?php echo $row['category_name'] ?>
+                        </a>
+
+                        <?php
+                    }
+                }
+                ?>
                 <div class="dropdown-divider"></div>
                 <h6 class="dropdown-header">New:</h6>
                 <a class="dropdown-item" href="admin-new-category.php">Create New</a>
             </div>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="videosDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="videosDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-fw fa-video"></i>
                 <span>Videos</span>
             </a>
@@ -173,7 +201,7 @@ if(empty($_SESSION["username"]))
                             <div class="card-body-icon">
                                 <i class="fas fa-fw fa-user-graduate"></i>
                             </div>
-                            <div class="mr-5">Total Number of User</div>
+                            <div class="mr-5"><h4><?= $total_user_number['total_users'] ?> User</h4></div>
                         </div>
                         <a class="card-footer text-white clearfix small z-1" href="#">
                             <span class="float-left">View Details</span>
@@ -189,7 +217,7 @@ if(empty($_SESSION["username"]))
                             <div class="card-body-icon">
                                 <i class="fas fa-fw fa-list-alt"></i>
                             </div>
-                            <div class="mr-5">Total Number of Categories!</div>
+                            <div class="mr-5"><h4><?=$total_category_number['total_categories']?> Categories!</h4></div>
                         </div>
                         <a class="card-footer text-white clearfix small z-1" href="#">
                             <span class="float-left">View Details</span>
@@ -215,20 +243,36 @@ if(empty($_SESSION["username"]))
                         </a>
                     </div>
                 </div>
-
+            </div>
+            <div class="row">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <?php
+                    if (isset($_POST['submit'])) {
+                        ?>
+                        <div class="alert alert-success alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <?php echo $msg; ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-lg-4"></div>
             </div>
             <!-- DataTables Example -->
             <div class="card mb-3">
                 <div class="card-header text-center font-weight-bold">
                     <i class="fas fa-table"></i>
-                    Dummy User List Table Example</div>
+                    List of User
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                             <tr>
                                 <th>Full Name</th>
-                                <th>Username</th>
+                                <th>User Name</th>
                                 <th>Email</th>
                                 <th>Action</th>
                             </tr>
@@ -242,7 +286,33 @@ if(empty($_SESSION["username"]))
                             </tr>
                             </tfoot>
                             <tbody>
-                            <tr>
+                            <?php
+                            $show_user = "select * from userinfo";
+                            $result = $conn->query($show_user);
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    if ($row['username'] != "admin") {
+//                                        print_r($row);
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row['fullname'] ?></td>
+                                            <td><?php echo $row['username'] ?></td>
+                                            <td><?php echo $row['email'] ?></td>
+                                            <td>
+                                                <form action="admin-dashboard.php" method="post">
+                                                    <input type="hidden" name="id"
+                                                           value="<?php echo $row['userinfo_id'] ?>">
+                                                    <input type="submit" name="submit" class="btn btn-danger btn-xs"
+                                                           value="delete">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+                            <!--<tr>
                                 <td>Mirabelle Sowley</td>
                                 <td>msowley0</td>
                                 <td>msowley0@macromedia.com</td>
@@ -585,7 +655,7 @@ if(empty($_SESSION["username"]))
                                 <td>Customer Support</td>
                                 <td>dummynewyork@email.com</td>
                                 <td><i class="fas fa-trash"></i></td>
-                            </tr>
+                            </tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -618,7 +688,8 @@ if(empty($_SESSION["username"]))
 </a>
 
 <!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -650,7 +721,7 @@ if(empty($_SESSION["username"]))
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#dataTable').DataTable();
     });
 </script>
