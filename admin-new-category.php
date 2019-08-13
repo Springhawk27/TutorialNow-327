@@ -1,13 +1,25 @@
 <?php
 session_start();
-if(empty($_SESSION["username"]))
-{
+if (empty($_SESSION["username"])) {
     header('Location: login.php');
-}else{
-    if($_SESSION["username"] != "admin")
-    {
+} else {
+    if ($_SESSION["username"] != "admin") {
         header('Location: admin-dashboard.php');
     }
+}
+require 'connection.php';
+$msg = "";
+if (isset($_POST['submit'])) {
+
+
+    $category_name = $_POST['category_name'];
+
+    $add_category = "INSERT INTO `video_category`(`category_name`) VALUES ('$category_name')";
+
+    if ($conn->query($add_category) === TRUE) {
+        $msg = "Successfully Added";
+    }
+
 }
 ?>
 <!DOCTYPE html>
@@ -80,11 +92,23 @@ if(empty($_SESSION["username"]))
                 <span>Categories</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                <h6 class="dropdown-header">Category List :</h6>
-                <a class="dropdown-item" href="categories.php">PHP</a>
-                <a class="dropdown-item" href="categories.php">HTML</a>
-                <a class="dropdown-item" href="categories.php">JavaScript</a>
-                <a class="dropdown-item" href="categories.php">CSS</a>
+                <h6 class="dropdown-header">
+                   <a href="categorylist.php"> Category List </a>
+                </h6>
+                <?php
+                $show_category = "select * from video_category";
+                $result = $conn->query($show_category);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        ?>
+                        <a class="dropdown-item" href="categories.php?id=<?php echo $row['category_id'] ?>">
+                            <?php echo $row['category_name'] ?>
+                        </a>
+
+                        <?php
+                    }
+                }
+                ?>
                 <div class="dropdown-divider"></div>
                 <h6 class="dropdown-header">New:</h6>
                 <a class="dropdown-item" href="admin-new-category.php">Create New</a>
@@ -114,21 +138,31 @@ if(empty($_SESSION["username"]))
             </ol>
             <div class="row">
                 <div class="card card-login mx-auto mt-5">
+                    <?php
+                    if(isset($_POST['submit']))
+                    {
+                        ?>
+                        <div class="alert alert-success alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <?php echo $msg;?>
+                        </div>
+                        <?php
+                    }
+                    ?>
                     <div class="card-header">New Tutorial Category</div>
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <h4>Enter Your Category Name</h4>
-                            <p>Enter your category name below</p>
                         </div>
-                        <form method="post">
+                        <form method="post" action="admin-new-category.php">
                             <div class="form-group">
                                 <div class="form-label-group">
-                                    <input type="text" id="category_name" class="form-control"
-                                           placeholder="Enter email address" required="required" autofocus="autofocus">
+                                    <input type="text" id="category_name" name="category_name" class="form-control"
+                                           placeholder="Enter Category Name" required>
                                     <label for="category_name">Enter Category Name</label>
                                 </div>
                             </div>
-                            <input type="submit" class="btn btn-primary btn-block" value="Add Category"/>
+                            <input type="submit" name="submit" class="btn btn-primary btn-block" value="Add Category"/>
                         </form>
                     </div>
                 </div>
