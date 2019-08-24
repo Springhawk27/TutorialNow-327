@@ -25,23 +25,7 @@ include_once 'admin-topnav.php';
             </ol>
             <!-- Icon Cards-->
             <div class="row">
-                <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-primary o-hidden h-100">
-                        <div class="card-body">
-                            <div class="card-body-icon">
-                                <i class="fas fa-fw fa-pen-nib"></i>
-                            </div>
-                            <div class="mr-5">10 Dummy Number Course!</div>
-                        </div>
-                        <a class="card-footer text-white clearfix small z-1" href="#">
-                            <span class="float-left">View Details</span>
-                            <span class="float-right">
-                  <i class="fas fa-angle-right"></i>
-                </span>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="col-xl-6 col-sm-6 mb-3">
                     <div class="card text-white bg-info o-hidden h-100">
                         <div class="card-body">
                             <div class="card-body-icon">
@@ -57,29 +41,13 @@ include_once 'admin-topnav.php';
                         </a>
                     </div>
                 </div>
-                <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-success o-hidden h-100">
+                <div class="col-xl-6 col-sm-6 mb-3">
+                    <div class="card text-white bg-primary o-hidden h-100">
                         <div class="card-body">
                             <div class="card-body-icon">
                                 <i class="fas fa-fw fa-list-alt"></i>
                             </div>
                             <div class="mr-5"><h4><?=$total_category_number['total_categories']?> Categories!</h4></div>
-                        </div>
-                        <a class="card-footer text-white clearfix small z-1" href="#">
-                            <span class="float-left">View Details</span>
-                            <span class="float-right">
-                  <i class="fas fa-angle-right"></i>
-                </span>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-danger o-hidden h-100">
-                        <div class="card-body">
-                            <div class="card-body-icon">
-                                <i class="fas fa-fw fa-life-ring"></i>
-                            </div>
-                            <div class="mr-5">13 New User!</div>
                         </div>
                         <a class="card-footer text-white clearfix small z-1" href="#">
                             <span class="float-left">View Details</span>
