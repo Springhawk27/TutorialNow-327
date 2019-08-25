@@ -1,12 +1,12 @@
 <?php
 session_start();
-if (!empty($_SESSION["username"])) {
-    if ($_SESSION["username"] == "admin") {
-        header('Location: admin.php');
-    } else {
-        header('Location: home.php');
-    }
-}
+//if (!empty($_SESSION["username"])) {
+//    if ($_SESSION["username"] == "admin") {
+//        header('Location: admin.php');
+//    } else {
+//        header('Location: home.php');
+//    }
+//}
 require 'connection.php';
 if (isset($_POST['username']) && isset($_POST['password'])) {
     $username = $_POST['username'];
@@ -17,12 +17,20 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         while ($row = $result->fetch_assoc()) {
             $_SESSION["username"] = $row['username'];
             $_SESSION["email"] = $row['email'];
+            $_SESSION["user_type"] = $row['user_type'];
         }
-        if ($username == "admin") {
+//        if (!empty($_SESSION["user_type"])) {
+        if ($_SESSION["user_type"] == 0) {
             header('Location: admin-dashboard.php');
-        } else {
+
+        } elseif ($_SESSION["user_type"] == 1) {
             header('Location: home.php');
         }
+        /*} else {
+            header($_SERVER['PHP_SELF']);
+        }*/
+        // echo "User name : ".$_SESSION['username'] . " Password : " . $_SESSION['email'] . " " . $_SESSION['user_type']." ";
+
     } else {
         echo "<script>alert('wrong username & Password')</script>";
     }
@@ -89,18 +97,22 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                 </div>
 
                 <div class="form-label-group">
-                    <input type="text" id="username" class="form-control" name="username" placeholder="User Name" required autofocus>
+                    <input type="text" id="username" class="form-control" name="username" placeholder="User Name"
+                           required autofocus>
                     <label for="username">Username</label>
                 </div>
 
                 <div class="form-label-group">
-                    <input type="password" id="password" class="form-control" name="password" placeholder="Password" required>
+                    <input type="password" id="password" class="form-control" name="password" placeholder="Password"
+                           required>
                     <label for="password">Password</label>
                 </div>
                 <div class="form-label-group">
                     <input type="checkbox" onclick="myFunction()"> &nbsp;Show Password
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign
+                    in
+                </button>
             </form>
         </div>
     </div>
