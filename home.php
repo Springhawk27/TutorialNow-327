@@ -67,9 +67,8 @@ require_once 'connection.php';
                 }
                 ?>
         </ul>
-        <!--        <a class="p-2 text-dark" href="#">Link 3</a>-->
-        <!--        <a class="p-2 text-dark" href="#">Link 3</a>-->
     </nav>
+    <a class="btn btn-link" href="profile.php"><i class="fas fa-user"></i> Profile</a>
     <a class="btn btn-outline-danger" href="logout.php">Logout</a>
 </div>
 
@@ -78,13 +77,13 @@ require_once 'connection.php';
         <div class="col-md-8 px-0">
             <form action="search.php" class="form-inline" method="post">
                 <h1 class="font-italic">Search course by name</h1>
-<!--                <p class="">-->
                 <div class="form-group">
                     <input type="text" class="form-control mb-2 mr-sm-2 lead" placeholder="Search"
                            name="search">
                     <div class="form-group">
                         <label for="duration">Filter by Duration</label>
                         <select class="form-control" name="duration">
+                            <option value="0">None</option>
                             <option value="1-5">1-5</option>
                             <option value="5-10">5-10</option>
                             <option value="10+">10+</option>
@@ -93,14 +92,6 @@ require_once 'connection.php';
                     <button class="btn btn-primary mt-1 ml-sm-2" type="submit"><i class="fas fa-search"></i>
                     </button>
                 </div>
-<!--                </p>-->
-<!--                <p class=""><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>-->
-                <!--            <form action="search.php" class="form-inline" method="post">-->
-<!--                <div class="form-group">-->
-                    <!--                    <label for="email">Search by name</label>-->
-
-<!--                </div>-->
-
             </form>
         </div>
     </div>
@@ -196,7 +187,8 @@ if ($result->num_rows > 0) {
 
 <div class="container jumbotron jumbotron-fluid">
     <h1 class="display-4 text-center">TutorialNow.com</h1>
-    <p class="lead text-center">TutorialNow.com is a learning website where viewers are mastering new skills and achieving heir goals.</p>
+    <p class="lead text-center">TutorialNow.com is a learning website where viewers are mastering new skills and
+        achieving heir goals.</p>
     <hr class="my-4">
     <p class="text-center">This site will provide a good amount of video tutorials in various sectors of education.</p>
 </div>
