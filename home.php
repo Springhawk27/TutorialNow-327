@@ -3,7 +3,7 @@ session_start();
 if (empty($_SESSION["username"])) {
     header('Location: login.php');
 }
-require 'connection.php';
+require_once 'connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,48 +12,98 @@ require 'connection.php';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
-    <script src="plugins/jquery/jquery.min.js"></script>
-    <script src="plugins/popper/popper.min.js"></script>
-    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.css">
 </head>
 <body>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
 
     <h5 class="my-0 mr-md-auto font-weight-normal">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="<?php $_SERVER['PHP_SELF'] ?>">
             <i class="fas fa-graduation-cap"></i>
             TutorialNow
         </a>
     </h5>
 
     <nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" href="#">Test Link 1</a>
-        <a class="p-2 text-dark" href="#">Link 2</a>
-        <a class="p-2 text-dark" href="#">Link 3</a>
-        <a class="p-2 text-dark" href="#">Link 3</a>
+        <div class="p-2 dropdown">
+            <a class="btn btn-light dropdown-toggle" href="#" role="button" id="categoryDropdownLink"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Categories
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="categoryDropdownLink">
+                <?php
+                $show_category = "select * from video_category";
+                $result = $conn->query($show_category);
+                if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                ?>
+                <li>
+                    <a class="text-dark dropdown-item" href="categories.php?id=<?php echo $row['category_id'] ?>">
+                        <?php echo $row['category_name'] ?>
+                    </a>
+                <li>
+                    <?php
+                    }
+                    }
+                    ?>
+            </div>
+        </div>
+        <ul class="dropdown-menu">
+            <?php
+            $show_category = "select * from video_category";
+            $result = $conn->query($show_category);
+            if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+            ?>
+            <li>
+                <a class="p-2 text-dark dropdown-item" href="categories.php?id=<?php echo $row['category_id'] ?>">
+                    <?php echo $row['category_name'] ?>
+                </a>
+            <li>
+                <?php
+                }
+                }
+                ?>
+        </ul>
+        <!--        <a class="p-2 text-dark" href="#">Link 3</a>-->
+        <!--        <a class="p-2 text-dark" href="#">Link 3</a>-->
     </nav>
     <a class="btn btn-outline-danger" href="logout.php">Logout</a>
 </div>
 
 <div class="container">
-    <form action="#" class="form-inline" method="post">
-        <div class="form-group">
-            <label for="email">Search by name</label>
-            <input type="text" class="form-control" placeholder="Search"
-                   name="search">
+    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+        <div class="col-md-8 px-0">
+            <form action="search.php" class="form-inline" method="post">
+                <h1 class="font-italic">Search course by name</h1>
+<!--                <p class="">-->
+                <div class="form-group">
+                    <input type="text" class="form-control mb-2 mr-sm-2 lead" placeholder="Search"
+                           name="search">
+                    <div class="form-group">
+                        <label for="duration">Filter by Duration</label>
+                        <select class="form-control" name="duration">
+                            <option value="1-5">1-5</option>
+                            <option value="5-10">5-10</option>
+                            <option value="10+">10+</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary mt-1 ml-sm-2" type="submit"><i class="fas fa-search"></i>
+                    </button>
+                </div>
+<!--                </p>-->
+<!--                <p class=""><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>-->
+                <!--            <form action="search.php" class="form-inline" method="post">-->
+<!--                <div class="form-group">-->
+                    <!--                    <label for="email">Search by name</label>-->
+
+<!--                </div>-->
+
+            </form>
         </div>
-        <div class="form-group">
-            <label for="duration">Filter by Duration</label>
-            <select class="form-control" name="duration">
-                <option value="1-5">1-5</option>
-                <option value="5-10">5-10</option>
-                <option value="10+">10+</option>
-            </select>
-        </div>
-        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i>
-        </button>
-    </form>
+    </div>
     <br>
 </div>
 <div class="container">
@@ -92,249 +142,63 @@ require 'connection.php';
     <br>
 </div>
 
-<div class="container">
-    <div class="container outerpadding">
+<?php
+$show_category = "select * from video_category";
+$result = $conn->query($show_category);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
 
-        <div class="row">
+        $category_id = $row['category_id'];
+        $show_video = "select * from video where category_id =$category_id limit 4";
+        $video_result = $conn->query($show_video);
+        if ($video_result->num_rows > 0) {
+            ?>
 
-            <legend>Dummy Category 1 <span class="pull-right"><a href="#">...more</a></span></legend>
+            <div class="container">
+            <legend>
+                <?php echo $row['category_name'] ?>
+                <span class="pull-right">
+                    <a class="float-right" href="categories.php?id=<?php echo $row['category_id'] ?>">...more</a>
+                </span>
+            </legend>
+            <div class="container outerpadding">
+            <div class="row">
 
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
+            <?php
+            while ($row_video = $video_result->fetch_assoc()) {
+                $thumbnail_path = "video/" . $row_video['thumbnail_path'];
+                ?>
+
+                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
+                    <div class="thumbnail">
+                        <a href="video.php?id=<?php echo $row_video['video_id'] ?>">
+                            <img src="<?php echo $thumbnail_path ?>" style="width:100%!important; height:200px">
+                            <div class="caption">
+                                <p><?php echo $row_video['caption'] ?></p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/engineering.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 1</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+
+                <?php
+            }
+        }
+        ?>
 
         </div>
-        <div class="row">
-
-            <legend>Dummy Category 2 <span class="pull-right"><a href="#">...more</a></span></legend>
-
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="font-size: 18px;">
-                <div class="thumbnail">
-                    <a href="#">
-                        <img src="image/ocean.jpg" style="width:100%!important; height:200px">
-                        <div class="caption">
-                            <p>Dummy Caption 2</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
         </div>
-    </div>
-</div>
+        </div>
 
+        <?php
+    }
+}
+?>
 
-<div id="about" class="container text-center" style="color: #000000; height: 400px; background-color: #C0C0C0;">
-    <h1>TutorialNow.com</h1>
-    <pre>TutorialNow.com is a learning website where viewers are mastering new skills and achieving heir goals.</pre>
-    <pre>This site will provide a good amount of video tutorials in various sectors of education.</pre>
+<div class="container jumbotron jumbotron-fluid">
+    <h1 class="display-4 text-center">TutorialNow.com</h1>
+    <p class="lead text-center">TutorialNow.com is a learning website where viewers are mastering new skills and achieving heir goals.</p>
+    <hr class="my-4">
+    <p class="text-center">This site will provide a good amount of video tutorials in various sectors of education.</p>
 </div>
 
 <div id="contact" class="container bg-grey">
@@ -365,22 +229,11 @@ require 'connection.php';
 
 <footer class="container-fluid text-center">
 
-    <p>CopyRight © 2019 Digital All Rights Reserved</p>
+    <p>CopyRight © 2019 TutorialNow All Rights Reserved</p>
 </footer>
 
-<script>
-    $(document).ready(function () {
-        $(".dropdown").hover(
-            function () {
-                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true, true).slideDown("fast");
-                $(this).toggleClass('open');
-            },
-            function () {
-                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true, true).slideUp("fast");
-                $(this).toggleClass('open');
-            }
-        );
-    });
-</script>
+<script src="plugins/jquery/jquery.min.js"></script>
+<script src="plugins/popper/popper.min.js"></script>
+<script src="plugins/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
