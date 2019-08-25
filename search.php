@@ -111,28 +111,6 @@ a{
               }
             ?>
           </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#"  class="dropdown-toggle" data-toggle="dropdown">
-          <?php echo $_SESSION["username"] ?><span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <?php 
-          if($_SESSION["username"]=='admin')
-          {
-          ?>
-          <li><a href="admin.php">profile</a></li>
-          <?php
-          }else{
-          ?>
-          <li><a href="userprofile.php">profile</a></li>
-          <?php 
-            }
-          ?>
-          <li><a href="logout.php">Log Out</a></li>
-          </ul>
-      </li>
-    </ul>
     </div>
   </div>
 </nav>
