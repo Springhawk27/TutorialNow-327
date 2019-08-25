@@ -1,5 +1,6 @@
 <?php
 include_once 'admin-header.php';
+
 ?>
 <body id="page-top">
 
@@ -9,11 +10,17 @@ include_once 'admin-topnav.php';
 <div id="wrapper">
 
     <?php
-    include_once 'admin-sidebar.php';
+    if ($_SESSION['user_type'] == 0) {
+        include_once 'admin-sidebar.php';
+    }
     ?>
     <div id="content-wrapper">
 
         <div class="container-fluid">
+            <?php
+            if ($_SESSION['user_type'] == 0) {
+                ?>
+
             <!-- Breadcrumbs-->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -21,9 +28,11 @@ include_once 'admin-topnav.php';
                 </li>
                 <li class="breadcrumb-item active">Categories</li>
                 <li><a class="btn btn-info" href="admin-new-category.php" style="position: absolute;
-right: 10%;"> <i class="fas fa-plus-circle"></i> Create New</a></li>
+right: 10%;"> <i class="fas fa-plus-circle"></i> <?= $_SESSION['user_type'] ?> Create New</a></li>
             </ol>
+
             <?php
+            }
             $id = $_GET['id'];
             $show_category = "select * from video_category where category_id=$id";
             $result = $conn->query($show_category);
@@ -53,7 +62,7 @@ right: 10%;"> <i class="fas fa-plus-circle"></i> Create New</a></li>
                                      style="font-size: 18px; padding-bottom: 10px;">
 
                                     <div class="card shadow-lg" style="width: 22rem;">
-                                        <a href="admin-videos.php?id=<?php echo $row_video['video_id'] ?>">
+                                        <a href="video.php?id=<?php echo $row_video['video_id'] ?>">
                                             <img src="<?php echo $thumbnail_path ?>" class="card-img-top"
                                                  style="width:100%!important; height:200px">
                                         </a>
