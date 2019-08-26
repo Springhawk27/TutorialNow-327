@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 30, 2019 at 09:25 PM
--- Server version: 10.3.16-MariaDB-1:10.3.16+maria~bionic
--- PHP Version: 7.2.19-0ubuntu0.18.04.1
+-- Generation Time: Aug 26, 2019 at 06:23 AM
+-- Server version: 10.3.17-MariaDB-1:10.3.17+maria~bionic
+-- PHP Version: 7.3.8-1+ubuntu18.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -42,7 +42,8 @@ INSERT INTO `bookmarks` (`bookmark_id`, `user_id`, `video_id`) VALUES
 (3, 8, 11),
 (4, 8, 12),
 (5, 8, 21),
-(6, 11, 11);
+(6, 11, 11),
+(12, 13, 11);
 
 -- --------------------------------------------------------
 
@@ -63,7 +64,9 @@ CREATE TABLE `comment` (
 
 INSERT INTO `comment` (`comment_id`, `user_id`, `video_id`, `comment`) VALUES
 (2, 10, 16, 'good'),
-(3, 9, 11, 'good\r\n');
+(3, 9, 11, 'good\r\n'),
+(5, 4, 12, 'test comment 1'),
+(9, 4, 12, 'test comment 1');
 
 -- --------------------------------------------------------
 
@@ -76,17 +79,18 @@ CREATE TABLE `userinfo` (
   `fullname` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `user_type` int(2) NOT NULL DEFAULT 1 COMMENT '0 = Admin; 1 = User;'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `userinfo`
 --
 
-INSERT INTO `userinfo` (`userinfo_id`, `fullname`, `username`, `email`, `password`) VALUES
-(4, 'admin', 'admin', 'myvideo@gmail.com', '123456'),
-(13, 'Sajjd Mahmud', 'sajjad', 'sajjad@northsouth.edu', 'Sajjad12345'),
-(14, 'test user 1', 'testuser1', 'testuser1@northsouth.edu', 'User-123');
+INSERT INTO `userinfo` (`userinfo_id`, `fullname`, `username`, `email`, `password`, `user_type`) VALUES
+(4, 'admin', 'admin', 'myvideo@gmail.com', '123456', 0),
+(13, 'Sajjd Mahmud Khan', 'sajjad', 'sajjad@northsouth.edu', 'Sajjad12345', 1),
+(14, 'test user 1', 'testuser1', 'testuser1@northsouth.edu', 'User-123', 1);
 
 -- --------------------------------------------------------
 
@@ -195,12 +199,12 @@ ALTER TABLE `video_category`
 -- AUTO_INCREMENT for table `bookmarks`
 --
 ALTER TABLE `bookmarks`
-  MODIFY `bookmark_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `bookmark_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `userinfo`
 --
@@ -210,12 +214,12 @@ ALTER TABLE `userinfo`
 -- AUTO_INCREMENT for table `video`
 --
 ALTER TABLE `video`
-  MODIFY `video_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `video_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT for table `video_category`
 --
 ALTER TABLE `video_category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
